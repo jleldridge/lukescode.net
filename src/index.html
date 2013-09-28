@@ -1,14 +1,25 @@
 <!DOCTYPE HTML>
 <html>
     <head>
+        <meta charset = "utf-8" />
+        <title>Lukescode.net</title>
+        <script 
+        src ="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+        </script>
     </head>
     <body>
         <canvas id="main" width="800" height="600" 
         style="background-color:black">   
         </canvas>
         <script type="text/javascript">
+            $(function(){
+                mouse_position();
+            });
             var canvas = document.getElementById('main');
             canvas.addEventListener("mousedown", mouse_position, false);
+            canvas.width = $(window).width();
+            canvas.height = $(window).height();
+
             function mouse_position(event){
                 var x = event.clientX + document.body.scrollLeft +
                     document.documentElement.scrollLeft;
