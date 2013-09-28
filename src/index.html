@@ -1,7 +1,27 @@
 <!DOCTYPE HTML>
 <html>
-    <head></head>
+    <head>
+    </head>
     <body>
-        <p>Stuff</p>
+        <canvas id="main" width="800" height="600" 
+        style="background-color:black">   
+        </canvas>
+        <script type="text/javascript">
+            var canvas = document.getElementById('main');
+            canvas.addEventListener("mousedown", mouse_position, false);
+            function mouse_position(event){
+                var x = event.clientX + document.body.scrollLeft +
+                    document.documentElement.scrollLeft;
+                var y = event.clientY + document.body.scrollTop +
+                    document.documentElement.scrollTop;
+
+                x -= canvas.offsetLeft;
+                y -= canvas.offsetTop;
+
+                var graphics = canvas.getContext('2d');
+                graphics.fillStyle='#FF0000';
+                graphics.fillRect(x, y, 30, 30);
+            }
+        </script>
     </body>
 </html>
