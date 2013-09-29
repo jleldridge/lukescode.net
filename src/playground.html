@@ -7,9 +7,9 @@
         src ="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
         </script>
     </head>
-    <body style="overflow: hidden;">
+    <body style="overflow: hidden; padding:0px; border:0px; margin:0px;">
         <canvas id="main" width="800" height="600" 
-        style="background-color:black">   
+        style="background-color:black; padding:0px; border:0px; margin:0px;">   
         </canvas>
         <script type="text/javascript">
             
@@ -57,16 +57,74 @@
             function update(){
                 //for each loops seem to not work for arrays
                 for (var i = 0; i < window.rects.length; i++){
-                    rect = window.rects[i];
+                    var rect = window.rects[i];
                     rect.x += rect.x_speed;
                     rect.y += rect.y_speed;
 
                     //check for collisions with outside of screen
-                    if ((rect.x + rect.width > canvas.width) || (rect.x < 0)){
+                    if (rect.x + rect.width > canvas.width){
+                        rect.x = canvas.width-rect.width;
                         rect.x_speed *= -1;
                     }
-                    if((rect.y + rect.height > canvas.height) || (rect.y < 0)){
+                    else if(rect.x < 0){
+                        rect.x = 0;
+                        rect.x_speed *= -1;
+                    }
+                    if(rect.y + rect.height > canvas.height){
+                        rect.y = canvas.height-rect.height;
                         rect.y_speed *= -1;
+                    }
+                    else if(rect.y < 0){
+                        rect.y = 0;
+                        rect.y_speed *= -1;
+                    }
+                }
+
+                //check for collisions with each other
+                var temp_rects = new Array();
+                temp_rects = window.rects.concat(temp_rects);
+
+                while(temp_rects.length > 0){
+                    var rect = temp_rects.pop();
+
+                    for (var i = 0; i < temp_rects.length; i++){
+                        other_rect = temp_rects[i];
+                        //check if they don't overlap on x axis
+                        if ((rect.x+rect.width < other_rect.x) || 
+                            (rect.x > other_rect.x+other_rect.width)){
+                            //do nothng
+                        }
+                        //check if they don't overlap on the y axis
+                        else if((rect.y+rect.height < other_rect.y) || 
+                            (rect.y > other_rect.y+other_rect.height)){
+                            //do nothing
+                        }
+                        //if both checks fail, they overlap on both axes, and
+                        //are colliding
+                        else{
+                            if (rect.x_speed > 0){
+                                rect.x = other_rect.x - rect.width;
+                                other_rect.x += 10;
+                            }
+                            else{
+                                rect.x = other_rect.x + other_rect.width;
+                                other_rect.x -= 10;
+                            }
+                            if(rect.y_speed > 0){
+                                rect.y = other_rect.y - rect.height;
+                                other_rect.y += 10;
+                            }
+                            else{
+                                rect.y = other_rect.y + other_rect.height;
+                                other_rect.y -= 10;
+                            }
+                            //before doing this, need to create impulse to 
+                            //separate the two objects
+                            rect.x_speed *= -1;
+                            rect.y_speed *= -1;
+                            other_rect.x_speed *= -1;
+                            other_rect.y_speed *= -1;
+                        }
                     }
                 }
             }
@@ -79,7 +137,7 @@
                 graphics.strokeStyle = '#FF0000';
                 //for each loops seem to not work for arrays
                 for (var i = 0; i < window.rects.length; i++){
-                    rect = window.rects[i];
+                    var rect = window.rects[i];
                     graphics.strokeRect(rect.x, rect.y, rect.width, rect.height);
                 }
             }
