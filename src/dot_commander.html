@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Lukescode.net</title>
+        <script 
+        src ="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+        </script>
+    </head>
+    <body style="overflow: hidden; padding:0px; border:0px; margin:0px;">
+        <canvas id="main" width="800" height="600" 
+        style="background-color:black; padding:0px; border:0px; margin:0px;">   
+        </canvas>
+        <script type="text/javascript">
+            $(function(){
+            });
+
+            var canvas = document.getElementById('main');
+            canvas.addEventListener("mousedown", on_mouse_down, false);
+            canvas.addEventListener("mouseup", on_mouse_up, false);
+            canvas.width = $(window).width();
+            canvas.height = $(window).height();
+
+            function on_mouse_down(event){
+                var x = event.clientX + document.body.scrollLeft +
+                    document.documentElement.scrollLeft;
+                var y = event.clientY + document.body.scrollTop +
+                    document.documentElement.scrollTop;
+                x -= canvas.offsetLeft;
+                y -= canvas.offsetTop;
+            }
+
+            function on_mouse_up(event){
+                var x = event.clientX + document.body.scrollLeft +
+                    document.documentElement.scrollLeft;
+                var y = event.clientY + document.body.scrollTop +
+                    document.documentElement.scrollTop;
+                x -= canvas.offsetLeft;
+                y -= canvas.offsetTop;
+            }
+        </script>
+    </body>
+</html>
