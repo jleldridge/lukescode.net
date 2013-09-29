@@ -12,13 +12,17 @@
         style="background-color:black">   
         </canvas>
         <script type="text/javascript">
+            
+            //this is required to use jquery, put any functions that will use
+            //jquery inside this function.
             $(function(){
-                mouse_position();
             });
+            
             var canvas = document.getElementById('main');
             canvas.addEventListener("mousedown", mouse_position, false);
             canvas.width = $(window).width();
             canvas.height = $(window).height();
+            window.rects = new Array();
 
             function mouse_position(event){
                 var x = event.clientX + document.body.scrollLeft +
@@ -29,10 +33,57 @@
                 x -= canvas.offsetLeft;
                 y -= canvas.offsetTop;
 
+                var rect = new Object();
+                rect.x = x;
+                rect.y = y;
+                rect.width = 30;
+                rect.height = 30;
+                rect.x_speed = Math.floor((Math.random()*10)+1);
+                rect.y_speed = Math.floor((Math.random()*10)+1);
+
+                window.rects.push(rect);
+
                 var graphics = canvas.getContext('2d');
                 graphics.strokeStyle='#FF0000';
-                graphics.strokeRect(x, y, 30, 30);
+                graphics.strokeRect(rect.x, rect.y, rect.width, rect.height);
             }
+
+            function main_loop(){
+                update();
+                render();
+            }
+
+            function update(){
+                //for each loops seem to not work for arrays
+                for (var i = 0; i < window.rects.length; i++){
+                    rect = window.rects[i];
+                    rect.x += rect.x_speed;
+                    rect.y += rect.y_speed;
+
+                    //check for collisions with outside of screen
+                    if ((rect.x + rect.width > canvas.width) || (rect.x < 0)){
+                        rect.x_speed *= -1;
+                    }
+                    if((rect.y + rect.height > canvas.height) || (rect.y < 0)){
+                        rect.y_speed *= -1;
+                    }
+                }
+            }
+
+            function render(){
+                var graphics = canvas.getContext('2d');
+                graphics.fillStyle = '#000000';
+                graphics.fillRect(0, 0, canvas.width, canvas.height);
+
+                graphics.strokeStyle = '#FF0000';
+                //for each loops seem to not work for arrays
+                for (var i = 0; i < window.rects.length; i++){
+                    rect = window.rects[i];
+                    graphics.strokeRect(rect.x, rect.y, rect.width, rect.height);
+                }
+            }
+
+            setInterval(main_loop, 1000/25);
         </script>
     </body>
 </html>
