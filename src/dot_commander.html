@@ -21,6 +21,8 @@
             canvas.addEventListener("mousemove", on_mouse_move, false);
             canvas.width = $(window).width();
             canvas.height = $(window).height();
+            var graphics = canvas.getContext('2d');
+            var select_rect = new Object();
 
             function on_mouse_down(event){
                 var x = event.clientX + document.body.scrollLeft +
@@ -54,8 +56,6 @@
 
                 window.curr_mouse_x = x;
                 window.curr_mouse_y = y;
-
-                console.log(x)
             }
 
             function main_loop(){
@@ -65,11 +65,24 @@
 
             function update(){
                 //draw square from mouse_down position to current mouse position
-
+                
+                if (window.mouse_down){
+                    window.select_rect.x = window.mouse_down_x;
+                    window.select_rect.y = window.mouse_down_y;
+                    window.select_rect.width = 
+                        window.curr_mouse_x-window.select_rect.x;
+                    window.select_rect.height = 
+                        window.curr_mouse_y-window.select_rect.y;
+                }
             }
 
             function render(){
+                graphics.fillStyle = "#000000";
+                graphics.fillRect(0, 0, canvas.width, canvas.height);
 
+                graphics.strokeStyle = "#FFFFFF";
+                graphics.strokeRect(window.select_rect.x, window.select_rect.y,
+                    window.select_rect.width, window.select_rect.height);
             }
 
             setInterval(main_loop, 1000/25);
