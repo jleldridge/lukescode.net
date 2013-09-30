@@ -21,8 +21,20 @@
             canvas.addEventListener("mousemove", on_mouse_move, false);
             canvas.width = $(window).width();
             canvas.height = $(window).height();
+            
             var graphics = canvas.getContext('2d');
             var select_rect = new Object();
+            var dots = new Array();
+            var selected_dots = new Array();
+
+            for(var i = 0; i < 10; i++){
+                var dot = new Object();
+                dot.x = (i+5)*20;
+                dot.y = (i+5)*40;
+                dot.radius = 5;
+                dot.selected = false;
+                dots.push(dot);
+            }
 
             function on_mouse_down(event){
                 var x = event.clientX + document.body.scrollLeft +
@@ -73,6 +85,27 @@
                         window.curr_mouse_x-window.select_rect.x;
                     window.select_rect.height = 
                         window.curr_mouse_y-window.select_rect.y;
+
+                    //find dots that are inside the select_rect
+                    selected_dots = new Array();
+                    for(var i = 0; i < window.dots.length; i++){
+                        var dot = dots[i];
+                        //check if they don't overlap on x axis
+                        if ((dot.x < select_rect.x) || 
+                            (dot.x > select_rect.x+select_rect.width)){
+                            dot.selected = false;
+                        }
+                        //check if they don't overlap on the y axis
+                        else if((dot.y < select_rect.y) || 
+                            (dot.y > select_rect.y+select_rect.height)){
+                            dot.selected = false;
+                        }
+                        //if both checks fail, they overlap on both axes, and
+                        //are colliding
+                        else{
+                            dot.selected = true;
+                        }
+                    }
                 }
                 else{
                     window.select_rect.width = 0;
@@ -87,6 +120,19 @@
                 graphics.strokeStyle = "#FFFFFF";
                 graphics.strokeRect(window.select_rect.x, window.select_rect.y,
                     window.select_rect.width, window.select_rect.height);
+
+                for(var i = 0; i < dots.length; i++){
+                    var dot = window.dots[i];
+                    if (dot.selected){
+                        graphics.fillStyle = "#00FF00";
+                    }
+                    else{
+                        graphics.fillStyle = "#FF0000";
+                    }
+                    graphics.beginPath();
+                    graphics.arc(dot.x, dot.y, dot.radius, 0, 2*Math.PI);
+                    graphics.fill();
+                }
             }
 
             setInterval(main_loop, 1000/25);
