@@ -18,6 +18,7 @@
             var canvas = document.getElementById('main');
             canvas.addEventListener("mousedown", on_mouse_down, false);
             canvas.addEventListener("mouseup", on_mouse_up, false);
+            canvas.addEventListener("mousemove", on_mouse_move, false);
             canvas.width = $(window).width();
             canvas.height = $(window).height();
 
@@ -28,6 +29,9 @@
                     document.documentElement.scrollTop;
                 x -= canvas.offsetLeft;
                 y -= canvas.offsetTop;
+                window.mouse_down = true;
+                window.mouse_down_x = x;
+                window.mouse_down_y = y;
             }
 
             function on_mouse_up(event){
@@ -37,7 +41,38 @@
                     document.documentElement.scrollTop;
                 x -= canvas.offsetLeft;
                 y -= canvas.offsetTop;
+                window.mouse_down = false;
             }
+
+            function on_mouse_move(event){
+                var x = event.clientX + document.body.scrollLeft +
+                    document.documentElement.scrollLeft;
+                var y = event.clientY + document.body.scrollTop +
+                    document.documentElement.scrollTop;
+                x -= canvas.offsetLeft;
+                y -= canvas.offsetTop;
+
+                window.curr_mouse_x = x;
+                window.curr_mouse_y = y;
+
+                console.log(x)
+            }
+
+            function main_loop(){
+                update();
+                render();
+            }
+
+            function update(){
+                //draw square from mouse_down position to current mouse position
+
+            }
+
+            function render(){
+
+            }
+
+            setInterval(main_loop, 1000/25);
         </script>
     </body>
 </html>
