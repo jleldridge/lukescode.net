@@ -74,6 +74,10 @@
                     window.select_rect.height = 
                         window.curr_mouse_y-window.select_rect.y;
                 }
+                else{
+                    window.select_rect.width = 0;
+                    window.select_rect.height = 0;
+                }
             }
 
             function render(){
