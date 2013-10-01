@@ -49,12 +49,6 @@
             }
 
             function on_mouse_up(event){
-                var x = event.clientX + document.body.scrollLeft +
-                    document.documentElement.scrollLeft;
-                var y = event.clientY + document.body.scrollTop +
-                    document.documentElement.scrollTop;
-                x -= canvas.offsetLeft;
-                y -= canvas.offsetTop;
                 window.mouse_down = false;
             }
 
