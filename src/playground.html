@@ -89,19 +89,10 @@
 
                     for (var i = 0; i < temp_rects.length; i++){
                         other_rect = temp_rects[i];
-                        //check if they don't overlap on x axis
-                        if ((rect.x+rect.width < other_rect.x) || 
-                            (rect.x > other_rect.x+other_rect.width)){
-                            //do nothng
-                        }
-                        //check if they don't overlap on the y axis
-                        else if((rect.y+rect.height < other_rect.y) || 
-                            (rect.y > other_rect.y+other_rect.height)){
-                            //do nothing
-                        }
-                        //if both checks fail, they overlap on both axes, and
-                        //are colliding
-                        else{
+                        
+                        collision = check_collision(rect, other_rect);
+                        
+                        if (collision){
                             if (rect.x_speed > 0){
                                 rect.x = other_rect.x - rect.width;
                                 other_rect.x += 10;
@@ -139,6 +130,24 @@
                 for (var i = 0; i < window.rects.length; i++){
                     var rect = window.rects[i];
                     graphics.strokeRect(rect.x, rect.y, rect.width, rect.height);
+                }
+            }
+
+            function check_collision(rect, other_rect){
+                //check if they don't overlap on x axis
+                if ((rect.x+rect.width < other_rect.x) || 
+                    (rect.x > other_rect.x+other_rect.width)){
+                    return false;
+                }
+                //check if they don't overlap on the y axis
+                else if((rect.y+rect.height < other_rect.y) || 
+                    (rect.y > other_rect.y+other_rect.height)){
+                    return false;
+                }
+                //if both checks fail, they overlap on both axes, and
+                //are colliding
+                else{
+                    return true;
                 }
             }
 
