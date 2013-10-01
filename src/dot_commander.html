@@ -25,12 +25,16 @@
             var graphics = canvas.getContext('2d');
             var select_rect = new Object();
             var dots = new Array();
-            var selected_dots = new Array();
+
+            var DOT_MAX_DX = 10;
+            var DOT_MAX_DY = 10;
 
             for(var i = 0; i < 10; i++){
                 var dot = new Object();
                 dot.x = (i+5)*20;
                 dot.y = (i+5)*40;
+                dot.dx = 0;
+                dot.dy = 0;
                 dot.radius = 5;
                 dot.selected = false;
                 dots.push(dot);
@@ -90,29 +94,50 @@
                     }
 
                     //find dots that are inside the select_rect
-                    selected_dots = new Array();
-                    for(var i = 0; i < window.dots.length; i++){
-                        var dot = dots[i];
-                        //check if they don't overlap on x axis
-                        if ((dot.x < select_rect.x) || 
-                            (dot.x > select_rect.x+select_rect.width)){
-                            dot.selected = false;
+                    if (select_rect.width < 3 && select_rect.height < 3){
+                        for (var i = 0; i < window.dots.length; i++){
+                            var dot = window.dots[i];
+                            if(dot.selected){
+                                var dot = window.dots[i];
+                                dot.dx = DOT_MAX_DX;
+                                dot.dy = DOT_MAX_DY;
+                            }
+                            else{
+                                dot.dx = 0;
+                                dot.dy = 0;
+                            }
                         }
-                        //check if they don't overlap on the y axis
-                        else if((dot.y < select_rect.y) || 
-                            (dot.y > select_rect.y+select_rect.height)){
-                            dot.selected = false;
-                        }
-                        //if both checks fail, they overlap on both axes, and
-                        //are colliding
-                        else{
-                            dot.selected = true;
+                    }
+                    else{
+                        for(var i = 0; i < window.dots.length; i++){
+                            var dot = dots[i];
+                            //check if they don't overlap on x axis
+                            if ((dot.x < select_rect.x) || 
+                                (dot.x > select_rect.x+select_rect.width)){
+                                dot.selected = false;
+                            }
+                            //check if they don't overlap on the y axis
+                            else if((dot.y < select_rect.y) || 
+                                (dot.y > select_rect.y+select_rect.height)){
+                                dot.selected = false;
+                            }
+                            //if both checks fail, they overlap on both axes, and
+                            //are colliding
+                            else{
+                                dot.selected = true;
+                            }
                         }
                     }
                 }
                 else{
                     window.select_rect.width = 0;
                     window.select_rect.height = 0;
+                }
+
+                for (var i = 0; i < window.dots.length; i++){
+                    var dot = window.dots[i];
+                    dot.x += dot.dx;
+                    dot.y += dot.dy;
                 }
             }
 
