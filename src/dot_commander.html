@@ -33,8 +33,8 @@
                 var dot = new Object();
                 dot.x = (i+5)*20;
                 dot.y = (i+5)*40;
-                dot.dx = 0;
-                dot.dy = 0;
+                dot.dx = DOT_MAX_DX;
+                dot.dy = DOT_MAX_DY;
                 dot.radius = 5;
                 dot.selected = false;
                 dots.push(dot);
@@ -99,12 +99,8 @@
                             var dot = window.dots[i];
                             if(dot.selected){
                                 var dot = window.dots[i];
-                                dot.dx = DOT_MAX_DX;
-                                dot.dy = DOT_MAX_DY;
-                            }
-                            else{
-                                dot.dx = 0;
-                                dot.dy = 0;
+                                dot.dx *= -1;
+                                dot.dy *= -1;
                             }
                         }
                     }
