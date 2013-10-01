@@ -86,6 +86,15 @@
                     window.select_rect.height = 
                         window.curr_mouse_y-window.select_rect.y;
 
+                    if (window.select_rect.width < 0){
+                        window.select_rect.x = curr_mouse_x;
+                        window.select_rect.width *= -1;
+                    }
+                    if (window.select_rect.height < 0){
+                        window.select_rect.y = curr_mouse_y;
+                        window.select_rect.height *= -1;
+                    }
+
                     //find dots that are inside the select_rect
                     selected_dots = new Array();
                     for(var i = 0; i < window.dots.length; i++){
