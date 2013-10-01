@@ -54,6 +54,14 @@
 
             function on_mouse_up(event){
                 window.mouse_down = false;
+                for (var i = 0; i < window.dots.length; i++){
+                    var dot = window.dots[i];
+                    if(dot.selected){
+                        var dot = window.dots[i];
+                        dot.dx *= -1;
+                        dot.dy *= -1;
+                    }
+                }
             }
 
             function on_mouse_move(event){
@@ -92,36 +100,23 @@
                         window.select_rect.y = curr_mouse_y;
                         window.select_rect.height *= -1;
                     }
-
-                    //find dots that are inside the select_rect
-                    if (select_rect.width < 3 && select_rect.height < 3){
-                        for (var i = 0; i < window.dots.length; i++){
-                            var dot = window.dots[i];
-                            if(dot.selected){
-                                var dot = window.dots[i];
-                                dot.dx *= -1;
-                                dot.dy *= -1;
-                            }
+                    
+                    for(var i = 0; i < window.dots.length; i++){
+                        var dot = dots[i];
+                        //check if they don't overlap on x axis
+                        if ((dot.x < select_rect.x) || 
+                            (dot.x > select_rect.x+select_rect.width)){
+                            dot.selected = false;
                         }
-                    }
-                    else{
-                        for(var i = 0; i < window.dots.length; i++){
-                            var dot = dots[i];
-                            //check if they don't overlap on x axis
-                            if ((dot.x < select_rect.x) || 
-                                (dot.x > select_rect.x+select_rect.width)){
-                                dot.selected = false;
-                            }
-                            //check if they don't overlap on the y axis
-                            else if((dot.y < select_rect.y) || 
-                                (dot.y > select_rect.y+select_rect.height)){
-                                dot.selected = false;
-                            }
-                            //if both checks fail, they overlap on both axes, and
-                            //are colliding
-                            else{
-                                dot.selected = true;
-                            }
+                        //check if they don't overlap on the y axis
+                        else if((dot.y < select_rect.y) || 
+                            (dot.y > select_rect.y+select_rect.height)){
+                            dot.selected = false;
+                        }
+                        //if both checks fail, they overlap on both axes, and
+                        //are colliding
+                        else{
+                            dot.selected = true;
                         }
                     }
                 }
