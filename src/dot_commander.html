@@ -16,9 +16,13 @@
             });
 
             var canvas = document.getElementById('main');
+            //give the canvas keyboard focus
+            canvas.setAttribute('tabindex', '0');
+            canvas.focus();
             canvas.addEventListener("mousedown", on_mouse_down, false);
             canvas.addEventListener("mouseup", on_mouse_up, false);
             canvas.addEventListener("mousemove", on_mouse_move, false);
+            canvas.addEventListener("keypress", on_key_up, false);
             canvas.width = $(window).width();
             canvas.height = $(window).height();
             
@@ -74,6 +78,10 @@
 
                 window.curr_mouse_x = x;
                 window.curr_mouse_y = y;
+            }
+
+            function on_key_up(event){
+                console.log(event.key);
             }
 
             function main_loop(){
