@@ -30,15 +30,14 @@
             var select_rect = new Object();
             var dots = new Array();
 
-            var DOT_MAX_DX = 10;
-            var DOT_MAX_DY = 10;
+            var DOT_MAX_SPEED = 10;
 
             for(var i = 0; i < 10; i++){
                 var dot = new Object();
                 dot.x = (i+5)*20;
                 dot.y = (i+5)*40;
-                dot.dx = DOT_MAX_DX;
-                dot.dy = DOT_MAX_DY;
+                dot.dx = 0;
+                dot.dy = 0;
                 dot.radius = 5;
                 dot.selected = false;
                 dots.push(dot);
@@ -76,25 +75,18 @@
                 for (var i = 0; i < window.dots.length; i++){
                     var dot = window.dots[i];
                     if(dot.selected){                
-                        //left arrow
-                        if (event.keyCode == '37'){
-                            dot.dx -= 1;
-                            if (dot.dx < 0-DOT_MAX_DX) dot.dx = 0-DOT_MAX_DX;
-                        }
-                        //right arrow
-                        else if(event.keyCode == '39'){
-                            dot.dx += 1;
-                            if (dot.dx > DOT_MAX_DX) dot.dx = DOT_MAX_DX;
-                        }
                         //up arrow
                         if (event.keyCode == '38'){
-                            dot.dy -= 1;
-                            if (dot.dy < 0-DOT_MAX_DY) dot.dy = 0-DOT_MAX_DY;
-                        }
-                        //down arrow
-                        else if (event.keyCode == '40'){
-                            dot.dy += 1;
-                            if (dot.dy > DOT_MAX_DY) dot.dy = DOT_MAX_DY;
+                            var x_vector = curr_mouse_x - dot.x;
+                            var y_vector = curr_mouse_y - dot.y;
+                            var theta = Math.atan(y_vector/x_vector);
+                            dot.dx = DOT_MAX_SPEED * Math.cos(theta);
+                            dot.dy = DOT_MAX_SPEED * Math.sin(theta);
+                            //this if should be replaced with something smarter.
+                            if (x_vector < 0) {
+                                dot.dx *= -1;
+                                dot.dy *= -1;
+                            }
                         }
                     }
                 }
@@ -161,7 +153,7 @@
             }
 
             function check_dot_out_of_bounds(dot){
-                //check for codotions with outside of screen
+                //check for collisions with outside of screen
                 if (dot.x > canvas.width){
                     dot.x = canvas.width;
                     dot.dx *= -1;
