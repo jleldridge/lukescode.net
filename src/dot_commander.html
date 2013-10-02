@@ -7,13 +7,20 @@
         src ="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
         </script>
     </head>
-    <body style="overflow: hidden; padding:0px; border:0px; margin:0px;">
+    <body id="body" 
+    style="overflow: hidden; padding:0px; border:0px; margin:0px;">
         <canvas id="main" width="800" height="600" 
         style="background-color:black; padding:0px; border:0px; margin:0px;">   
         </canvas>
         <script type="text/javascript">
             $(function(){
             });
+
+            var body = document.getElementById('body');
+            //prevent context menu from appearing on right click
+            body.addEventListener('contextmenu', function(event){
+                event.preventDefault();
+            }, false);
 
             var canvas = document.getElementById('main');
             //give the canvas keyboard focus
@@ -22,7 +29,6 @@
             canvas.addEventListener("mousedown", on_mouse_down, false);
             canvas.addEventListener("mouseup", on_mouse_up, false);
             canvas.addEventListener("mousemove", on_mouse_move, false);
-            canvas.addEventListener("keypress", on_key_up, false);
             canvas.width = $(window).width();
             canvas.height = $(window).height();
             
@@ -44,15 +50,22 @@
             }
 
             function on_mouse_down(event){
-                var x = event.clientX + document.body.scrollLeft +
+                //left mouse click
+                if (event.which == 1){
+                    var x = event.clientX + document.body.scrollLeft +
                     document.documentElement.scrollLeft;
-                var y = event.clientY + document.body.scrollTop +
-                    document.documentElement.scrollTop;
-                x -= canvas.offsetLeft;
-                y -= canvas.offsetTop;
-                window.mouse_down = true;
-                window.mouse_down_x = x;
-                window.mouse_down_y = y;
+                    var y = event.clientY + document.body.scrollTop +
+                        document.documentElement.scrollTop;
+                    x -= canvas.offsetLeft;
+                    y -= canvas.offsetTop;
+                    window.mouse_down = true;
+                    window.mouse_down_x = x;
+                    window.mouse_down_y = y;
+                }
+                //right mouse click
+                else if(event.which == 3){
+                    on_right_click();
+                }
             }
 
             function on_mouse_up(event){
@@ -71,22 +84,19 @@
                 window.curr_mouse_y = y;
             }
 
-            function on_key_up(event){
+            function on_right_click(){
                 for (var i = 0; i < window.dots.length; i++){
                     var dot = window.dots[i];
                     if(dot.selected){                
-                        //up arrow
-                        if (event.keyCode == '38'){
-                            var x_vector = curr_mouse_x - dot.x;
-                            var y_vector = curr_mouse_y - dot.y;
-                            var theta = Math.atan(y_vector/x_vector);
-                            dot.dx = DOT_MAX_SPEED * Math.cos(theta);
-                            dot.dy = DOT_MAX_SPEED * Math.sin(theta);
-                            //this if should be replaced with something smarter.
-                            if (x_vector < 0) {
-                                dot.dx *= -1;
-                                dot.dy *= -1;
-                            }
+                        var x_vector = curr_mouse_x - dot.x;
+                        var y_vector = curr_mouse_y - dot.y;
+                        var theta = Math.atan(y_vector/x_vector);
+                        dot.dx = DOT_MAX_SPEED * Math.cos(theta);
+                        dot.dy = DOT_MAX_SPEED * Math.sin(theta);
+                        //this if should be replaced with something smarter.
+                        if (x_vector < 0) {
+                            dot.dx *= -1;
+                            dot.dy *= -1;
                         }
                     }
                 }
