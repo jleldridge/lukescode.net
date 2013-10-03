@@ -139,21 +139,36 @@
                 }
             }
 
-            function check_dot_collision(dot, rect){
+            function check_dot_collision(dot, obj, mode){
                 //check if they don't overlap on x axis
-                if ((dot.x < rect.x) || 
-                    (dot.x > rect.x+rect.width)){
-                    return false;
+                if (mode == "rect"){
+                    rect = obj;
+                    if ((dot.x < rect.x) || 
+                        (dot.x > rect.x+rect.width)){
+                        return false;
+                    }
+                    //check if they don't overlap on the y axis
+                    else if((dot.y < rect.y) || 
+                        (dot.y > rect.y+rect.height)){
+                        return false;
+                    }
+                    //if both checks fail, they overlap on both axes, and
+                    //are colliding
+                    else{
+                        return true;
+                    }
                 }
-                //check if they don't overlap on the y axis
-                else if((dot.y < rect.y) || 
-                    (dot.y > rect.y+rect.height)){
-                    return false;
-                }
-                //if both checks fail, they overlap on both axes, and
-                //are colliding
-                else{
-                    return true;
+
+                if (mode == "dot"){
+                    if(Math.abs(dot.x-obj.x) > dot.radius){
+                        return false;
+                    }
+                    else if(Math.abs(dot.y-obj.y) > dot.radius){
+                        return false;
+                    }
+                    else{
+                        return true;
+                    }
                 }
             }
 
@@ -197,7 +212,21 @@
                     
                     for(var i = 0; i < window.dots.length; i++){
                         var dot = dots[i];
-                        dot.selected = check_dot_collision(dot, select_rect);
+                        dot.selected = 
+                            check_dot_collision(dot, select_rect, "rect");
+                        
+                    }
+
+                    var temp_dots = new Array();
+                    temp_dots = window.dots.concat(temp_dots);
+                    while(temp_dots.length > 0){
+                        var dot = temp_dots.pop();
+                        for (var i = 0; i < temp_dots.length; i++){
+                            o_dot = temp_dots[i];
+                            collision = check_dot_collision(dot, o_dot, "dot");
+                            
+                            //handle dot collisions
+                        }
                     }
                 }
                 else{
