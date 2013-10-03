@@ -49,11 +49,6 @@
                 graphics.strokeRect(rect.x, rect.y, rect.width, rect.height);
             }
 
-            function main_loop(){
-                update();
-                render();
-            }
-
             function update(){
                 //for each loops seem to not work for arrays
                 for (var i = 0; i < window.rects.length; i++){
@@ -151,7 +146,16 @@
                 }
             }
 
-            setInterval(main_loop, 1000/25);
+            function main_loop(){
+                window.requestAnimationFrame(main_loop);
+                update();
+                render();
+            }
+            
+            main_loop();
+            
+            //DO NOT DO THIS
+            //setInterval(main_loop, 1000/25);
         </script>
     </body>
 </html>
