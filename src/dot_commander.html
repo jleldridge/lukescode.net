@@ -107,12 +107,31 @@
                 //draw square from mouse_down position to current mouse position
                 create_select_rect();
                 
-
                 for (var i = 0; i < window.dots.length; i++){
                     var dot = window.dots[i];
                     dot.x += dot.dx;
                     dot.y += dot.dy;
 
+                    var temp_dots = new Array();
+                    temp_dots = window.dots.concat(temp_dots);
+                    while(temp_dots.length > 0){
+                        var dot = temp_dots.pop();
+                        for (var i = 0; i < temp_dots.length; i++){
+                            o_dot = temp_dots[i];
+                            collision = check_dot_collision(dot, o_dot, "dot");
+                            if (collision){
+                                //handle dot collisions
+                                if ((dot.dx > 0 && o_dot.dx < 0) || 
+                                    (dot.dx < 0 && o_dot.dx > 0)){
+                                    dot.dx *= -1;
+                                }
+                                if ((dot.dy > 0 && o_dot.dy < 0) || 
+                                    (dot.dy < 0 && o_dot.dy > 0)){
+                                    dot.dy *= -1;
+                                }
+                            }
+                        }
+                    }
                     check_dot_out_of_bounds(dot);
                 }
 
@@ -214,20 +233,7 @@
                     for(var i = 0; i < window.dots.length; i++){
                         var dot = dots[i];
                         dot.selected = 
-                            check_dot_collision(dot, select_rect, "rect");
-                        
-                    }
-
-                    var temp_dots = new Array();
-                    temp_dots = window.dots.concat(temp_dots);
-                    while(temp_dots.length > 0){
-                        var dot = temp_dots.pop();
-                        for (var i = 0; i < temp_dots.length; i++){
-                            o_dot = temp_dots[i];
-                            collision = check_dot_collision(dot, o_dot, "dot");
-                            
-                            //handle dot collisions
-                        }
+                            check_dot_collision(dot, select_rect, "rect");   
                     }
                 }
                 else{
