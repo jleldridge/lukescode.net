@@ -102,11 +102,6 @@
                 }
             }
 
-            function main_loop(){
-                update();
-                render();
-            }
-
             function update(){
                 //draw square from mouse_down position to current mouse position
                 create_select_rect();
@@ -211,7 +206,19 @@
                 }
             }
 
-            setInterval(main_loop, 1000/25);
+            function main_loop(){
+                //this is apparently the proper way to do game
+                //loops in javascript
+                window.requestAnimationFrame(main_loop);
+                update();
+                render();
+            }
+
+            //This is the proper way to do things, check out the main_loop function.
+            main_loop();
+
+            //DO NOT DO THIS ANYMORE
+            //setInterval(main_loop, 1000/25);
         </script>
     </body>
 </html>
