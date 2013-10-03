@@ -37,12 +37,11 @@
             var select_rect = new Object();
             var dots = new Array();
 
-            var DOT_MAX_SPEED = 10;
-
+            var DOT_MAX_SPEED = 3;
             for(var i = 0; i < 10; i++){
                 var dot = new Object();
                 dot.x = (i+5)*20;
-                dot.y = (i+5)*40;
+                dot.y = 50;
                 dot.dx = 0;
                 dot.dy = 0;
                 dot.radius = 5;
@@ -113,8 +112,10 @@
                     dot.y += dot.dy;
                 }
 
+                //check dot collisions with each other.
                 var temp_dots = new Array();
                 temp_dots = window.dots.concat(temp_dots);
+                
                 while(temp_dots.length > 0){
                     var dot = temp_dots.pop();
                     for (var i = 0; i < temp_dots.length; i++){
@@ -123,6 +124,7 @@
                             check_dot_collision(dot, o_dot, "dot");
                         
                         if (collision){
+                            console.log('dot collision');
                             //handle dot collisions
                             if ((dot.dx > 0 && o_dot.dx < 0) || 
                                 (dot.dx < 0 && o_dot.dx > 0)){
@@ -136,7 +138,7 @@
                                 dot.dy *= -1;
                                 o_dot.dy *= -1;
                                 dot.y += dot.dy;
-                                o_dot.x += o_dot.dx;
+                                o_dot.y += o_dot.dy;
                             }
                         }
                     }
@@ -197,6 +199,8 @@
                         return true;
                     }
                 }
+
+                return false;
             }
 
             function check_dot_out_of_bounds(dot){
