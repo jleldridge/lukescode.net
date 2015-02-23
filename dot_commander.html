@@ -3,15 +3,20 @@
     <head>
         <meta charset="utf-8" />
         <title>Lukescode.net</title>
+        <link rel="stylesheet" type="text/css" href="dot_commander.css">
         <script 
-        src ="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
         </script>
     </head>
-    <body id="body" 
-    style="overflow: hidden; padding:0px; border:0px; margin:0px;">
-        <canvas id="main" width="800" height="600" 
-        style="background-color:black; padding:0px; border:0px; margin:0px;">   
-        </canvas>
+    <body id="body">
+        <div id="main_div">
+            <div id="menu_div">
+                <p style="position:absolute">
+                </p>
+            </div>
+            <canvas id="main_canvas">
+            </canvas>
+        </div>
         <script type="text/javascript">
             $(function(){
             });
@@ -21,15 +26,39 @@
             body.addEventListener('contextmenu', function(event){
                 event.preventDefault();
             }, false);
-
-            var canvas = document.getElementById('main');
+            
+            var canvas = document.getElementById('main_canvas');
+            var mainDiv = document.getElementById('main_div');
+            var menuDiv = document.getElementById('menu_div');
+            
+            mainDiv.addEventListener("mousedown", mainDivOnMouseDown, false);
+            mainDiv.addEventListener("mouseup", mainDivOnMouseUp, false);
+            mainDiv.addEventListener("mousemove", mainDivOnMouseMove, false);
+            
+            var menuList = document.createElement('ul');
+            menuList.id = "menu_list";
+            var listItem = document.createElement('li');
+            listItem.innerHTML = "<a>Create new dot</a>";
+            listItem.addEventListener("click", createNewDot, false);
+            menuList.appendChild(listItem);
+            var menuCreated = false;
+            
+            menuDiv.addEventListener("animationend", menuDivAnimationEnd, 
+                false);
+            menuDiv.addEventListener("webkitAnimationEnd", menuDivAnimationEnd, 
+                false);
+            menuDiv.addEventListener("click", menuDivToggleClicked, 
+                false);
+            
             //give the canvas keyboard focus
-            canvas.setAttribute('tabindex', '0');
-            canvas.focus();
-            canvas.addEventListener("mousedown", on_mouse_down, false);
-            canvas.addEventListener("mouseup", on_mouse_up, false);
-            canvas.addEventListener("mouseout", on_mouse_up, false);
-            canvas.addEventListener("mousemove", on_mouse_move, false);
+//            canvas.setAttribute('tabindex', '0');
+//            canvas.focus();
+//            canvas.addEventListener("mousedown", canvasOnMouseDown, false);
+//            canvas.addEventListener("mouseup", canvasOnMouseUp, false);
+            canvas.addEventListener("mouseout", canvasOnMouseUp, false);
+//            canvas.addEventListener("mousemove", canvasOnMouseMove, false);
+            mainDiv.width = $(window).width();
+            mainDiv.height = $(window).height();
             canvas.width = $(window).width();
             canvas.height = $(window).height();
             
@@ -48,8 +77,54 @@
                 dot.selected = false;
                 dots.push(dot);
             }
-
-            function on_mouse_down(event){
+            
+            function mainDivOnMouseDown(event){
+                canvasOnMouseDown(event);
+            }
+            
+            function mainDivOnMouseUp(event){
+                canvasOnMouseUp(event);
+            }
+            
+            function mainDivOnMouseMove(event){
+                canvasOnMouseMove(event);
+            }
+            
+            function menuDivToggleClicked(event){
+                if (menuDiv.className == 'clicked'){
+                    menuDiv.className = 'unclicked';
+                    menuDivDestroyMenu();
+                }
+                else{
+                    menuDiv.className = 'clicked';
+                }
+                
+                event.stopPropagation();
+            }
+            
+            function menuDivAnimationEnd(event){
+                if (menuDiv.className == 'clicked'){
+                    menuDiv.appendChild(menuList);   
+                }
+            }
+            
+            function menuDivDestroyMenu(){
+                menuDiv.removeChild(menuList);
+            }
+            
+            function createNewDot(event){
+                var dot = new Object();
+                dot.x = 80;
+                dot.y = 200;
+                dot.dx = 0;
+                dot.dy = 0;
+                dot.radius = 5;
+                dot.selected = false;
+                dots.push(dot)
+                event.stopPropagation();
+            }
+            
+            function canvasOnMouseDown(event){
                 //left mouse click
                 if (event.which == 1){
                     var x = event.clientX + document.body.scrollLeft +
@@ -68,11 +143,11 @@
                 }
             }
 
-            function on_mouse_up(event){
+            function canvasOnMouseUp(event){
                 window.mouse_down = false;
             }
 
-            function on_mouse_move(event){
+            function canvasOnMouseMove(event){
                 var x = event.clientX + document.body.scrollLeft +
                     document.documentElement.scrollLeft;
                 var y = event.clientY + document.body.scrollTop +
@@ -123,7 +198,7 @@
                         var collision = 
                             check_dot_collision(dot, o_dot, "dot");
                         
-                        if (collision){
+                        if (collision){ 
                             console.log('dot collision');
                             //handle dot collisions
                             if ((dot.dx > 0 && o_dot.dx < 0) || 
@@ -139,6 +214,18 @@
                                 o_dot.dy *= -1;
                                 dot.y += dot.dy;
                                 o_dot.y += o_dot.dy;
+                            }
+                            if (dot.dx == 0){
+                                dot.dx += o_dot.dx;
+                            }
+                            if (dot.dy == 0){
+                                dot.dy += o_dot.dy;
+                            }
+                            if (o_dot.dx == 0){
+                                o_dot.dx += dot.dx;
+                            }
+                            if (o_dot.dy == 0){
+                                o_dot.dy += dot.dy;
                             }
                         }
                     }
@@ -261,7 +348,8 @@
                 render();
             }
 
-            //This is the proper way to do things, check out the main_loop function.
+            //This is the proper way to do things, check out the main_loop 
+            //function.
             main_loop();
 
             //DO NOT DO THIS ANYMORE
